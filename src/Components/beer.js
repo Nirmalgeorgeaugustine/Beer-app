@@ -1,18 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBeers } from '../Redux/action';
+import Pagination from './pagination';
 
 const BeerList = () => {
+  const [fadeIn, setFadeIn] = useState(false);
   const beers = useSelector((state) => state.beers);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    //beer List
+    // Fetch beer list
     dispatch(fetchBeers());
+
+    // Trigger fade-in effect after a short delay
+    setTimeout(() => {
+      setFadeIn(true);
+    }, 100);
   }, [dispatch]);
 
   return (
-    <div className="table-responsive">
+    <div className={`table-responsive beer-list${fadeIn ? 'fade-in' : ''}`}>
       <table className="table table-striped table-bordered">
         <thead className="thead-dark">
           <tr>
@@ -34,6 +42,8 @@ const BeerList = () => {
             ))}
         </tbody>
       </table>
+
+      <Pagination />
     </div>
   );
 };
