@@ -9,8 +9,16 @@ import {
 const URL = 'https://api.punkapi.com/v2/beers';
 
 //get beers
-export const fetchBeers = (page = 1) => {
-  const url = `${URL}?page=${page}&per_page=10`;
+export const fetchBeers = (page = 1, brewedBefore, brewedAfter) => {
+  let url = `${URL}?page=${page}&per_page=10`;
+
+  if (brewedBefore) {
+    url += `&brewed_before=${brewedBefore}`;
+  }
+  if (brewedAfter) {
+    url += `&brewed_after=${brewedAfter}`;
+  }
+
   return async (dispatch) => {
     try {
       const response = await axios.get(url);

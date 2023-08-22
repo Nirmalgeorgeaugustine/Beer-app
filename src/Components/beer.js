@@ -2,25 +2,57 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchBeers } from '../Redux/action';
 import Pagination from './pagination';
+import moment from 'moment';
 
 const BeerList = () => {
-  const [fadeIn, setFadeIn] = useState(false);
   const beers = useSelector((state) => state.beers);
 
   const dispatch = useDispatch();
+  const [brewedBefore, setBrewedBefore] = useState('');
+  const [brewedAfter, setBrewedAfter] = useState('');
+  const [formatedBefore, setFormatedBefore] = useState('');
+  const [formatedAfter, setFormatedAfter] = useState('');
+  console.log(brewedBefore);
+  console.log(brewedAfter);
 
   useEffect(() => {
-    // Fetch beer list
     dispatch(fetchBeers());
-
-    // Trigger fade-in effect after a short delay
-    setTimeout(() => {
-      setFadeIn(true);
-    }, 100);
   }, [dispatch]);
 
+  const handleFilterChange = () => {
+    const before = moment(brewedBefore).format('MM/YYYY');
+    const after = moment(brewedAfter).format('MM/YYYY');
+    setFormatedBefore(before);
+    setFormatedAfter(after);
+    if (brewedBefore && brewedAfter && brewedBefore > brewedAfter) {
+      dispatch(fetchBeers(1, before, after));
+    }
+  };
+
   return (
-    <div className={`table-responsive beer-list${fadeIn ? 'fade-in' : ''}`}>
+    <div className={`table-responsive beer-list}`}>
+      <div className="filters">
+        <label htmlFor="brewedBefore">Brewed Before:</label>
+        <input
+          type="month"
+          id="brewedBefore"
+          value={brewedBefore}
+          onChange={(e) => setBrewedBefore(e.target.value)}
+        />
+        <label htmlFor="brewedAfter">Brewed After:</label>
+        <input
+          type="month"
+          id="brewedAfter"
+          value={brewedAfter}
+          onChange={(e) => setBrewedAfter(e.target.value)}
+        />
+        <button
+          disabled={brewedAfter && brewedBefore ? false : true}
+          onClick={handleFilterChange}
+        >
+          Apply Filters
+        </button>
+      </div>
       <table className="table table-striped table-bordered">
         <thead className="thead-dark">
           <tr>
@@ -43,7 +75,7 @@ const BeerList = () => {
         </tbody>
       </table>
 
-      <Pagination />
+      <Pagination brewedBefore={formatedBefore} brewedAfter={formatedAfter} />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBeers } from '../Redux/action';
 
-function Pagination() {
+function Pagination({ brewedBefore, brewedAfter }) {
   const dispatch = useDispatch();
   const currentPage = useSelector((state) => state.currentPage);
   console.log(currentPage);
@@ -12,7 +12,7 @@ function Pagination() {
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
-    dispatch(fetchBeers(newPage));
+    dispatch(fetchBeers(newPage, brewedBefore, brewedAfter));
   };
 
   const totalPages = 33;
@@ -22,7 +22,8 @@ function Pagination() {
     const buttons = [];
     const startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
+    console.log(startPage);
+    console.log(endPage);
     if (startPage > 1) {
       buttons.push(
         <button
