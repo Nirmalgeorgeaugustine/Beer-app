@@ -29,6 +29,14 @@ const BeerList = () => {
     }
   };
 
+  const handleClearFilters = () => {
+    setBrewedBefore('');
+    setBrewedAfter('');
+    setFormatedBefore('');
+    setFormatedAfter('');
+    dispatch(fetchBeers(1, null, null));
+  };
+  console.log(beers?.length);
   return (
     <div className={`table-responsive beer-list}`}>
       <div className="filters">
@@ -51,6 +59,12 @@ const BeerList = () => {
           onClick={handleFilterChange}
         >
           Apply Filters
+        </button>
+        <button
+          disabled={brewedAfter && brewedBefore ? false : true}
+          onClick={handleClearFilters}
+        >
+          Clear Filters
         </button>
       </div>
       <table className="table table-striped table-bordered">
@@ -75,7 +89,11 @@ const BeerList = () => {
         </tbody>
       </table>
 
-      <Pagination brewedBefore={formatedBefore} brewedAfter={formatedAfter} />
+      {beers?.length === 0 ? (
+        <p>No datas Found</p>
+      ) : (
+        <Pagination brewedBefore={formatedBefore} brewedAfter={formatedAfter} />
+      )}
     </div>
   );
 };
